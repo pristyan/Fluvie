@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/ui/movie_model.dart';
 import 'package:flutter_movie/style/dimens.dart';
+import 'package:flutter_movie/ui/detail/movie_detail.dart';
 
 class NowPlayingList extends StatelessWidget {
   final List<Movie> items;
@@ -76,43 +77,53 @@ class ItemMovie extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(marginXSmall),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(marginDefault),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(marginDefault),
-                  bottomLeft: Radius.circular(marginDefault)),
-              child: Stack(
-                children: <Widget>[
-                  Image.network(
-                    movie.getPosterUrl(),
-                    height: 100,
-                  ),
-                  ratingText()
-                ],
+      child: GestureDetector(
+        onTap: () => goToDetail(context),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(marginDefault),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(marginDefault),
+                    bottomLeft: Radius.circular(marginDefault)),
+                child: Stack(
+                  children: <Widget>[
+                    Image.network(
+                      movie.getPosterUrl(),
+                      height: 100,
+                    ),
+                    ratingText()
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                  padding: EdgeInsets.all(marginDefault),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      titleText(),
-                      overviewText(),
-                    ],
-                  )),
-            ),
-          ],
+              Expanded(
+                child: Container(
+                    padding: EdgeInsets.all(marginDefault),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        titleText(),
+                        overviewText(),
+                      ],
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  void goToDetail(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MovieDetail(movie: this.movie,)),
     );
   }
 }
