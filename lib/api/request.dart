@@ -1,10 +1,9 @@
 import 'package:flutter_movie/api/constants.dart';
-import 'package:flutter_movie/util/date_util.dart';
 
 Uri nowPlaying() {
   var queryParam = {
     'api_key': API_KEY,
-    'primary_release_date.lte': getCurrentDate(),
+    'region': 'ID',
   };
 
   return Uri.https(BASE_URL, NOW_PLAYING, queryParam);
