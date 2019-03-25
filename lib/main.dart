@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/navigation/routes.dart';
-import 'package:flutter_movie/ui/playing/now_playing.dart';
+import 'package:flutter_movie/ui/home/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       ),
 
       routes: getRoutes(),
-      home: NowPlayingWidget(),
+      home: Home(),
     );
   }
 }

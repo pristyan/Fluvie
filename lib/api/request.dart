@@ -9,6 +9,14 @@ Uri nowPlaying() {
   return Uri.https(BASE_URL, NOW_PLAYING, queryParam);
 }
 
+Uri popularMovie() {
+  var queryParam = {
+    'api_key': API_KEY,
+  };
+
+  return Uri.https(BASE_URL, TRENDING, queryParam);
+}
+
 Uri movieDetail(int id) {
   var queryParam = {
     'api_key': API_KEY,

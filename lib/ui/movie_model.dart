@@ -1,6 +1,33 @@
 import 'dart:convert';
 import 'package:flutter_movie/util/date_util.dart';
 
+MovieListResponse movieListResponseFromJson(String str) {
+  final jsonData = json.decode(str);
+  return MovieListResponse.fromJson(jsonData);
+}
+
+class MovieListResponse {
+  int page;
+  int totalPages;
+  List<Movie> results;
+
+  MovieListResponse({this.page, this.totalPages, this.results});
+
+  factory MovieListResponse.fromJson(Map<String, dynamic> json) {
+    var list = json["results"] as List;
+    List<Movie> parsedList = list.map((i) => Movie.fromJson(i)).toList();
+
+    return MovieListResponse(
+        page: json["page"],
+        totalPages: json["total_pages"],
+        results: parsedList);
+  }
+
+  Map<String, dynamic> toJson() =>
+      {"page": page, "total_pages": totalPages, "results": results};
+}
+
+
 Movie movieItemListFromJson(String str) {
   final jsonData = json.decode(str);
   return Movie.fromJson(jsonData);

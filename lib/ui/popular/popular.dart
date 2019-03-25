@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_movie/api/services.dart' as Api;
 import 'package:flutter_movie/ui/movie_model.dart';
 import 'package:flutter_movie/widget/movie_item_list.dart';
+import 'package:flutter_movie/api/services.dart' as Api;
 
-class NowPlayingWidget extends StatefulWidget {
+class Popular extends StatefulWidget {
   @override
-  NowPlayingState createState() => NowPlayingState();
+  State<StatefulWidget> createState() => PopularState();
+
 }
 
-class NowPlayingState extends State<NowPlayingWidget> {
+class PopularState extends State<Popular> {
+
   Widget movieListView(List<Movie> movies) => MovieList(movies);
 
   Widget errorDialog(message) => Center(child: Text(message));
@@ -19,10 +21,10 @@ class NowPlayingState extends State<NowPlayingWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Now Playing"),
+        title: Text("Popular"),
       ),
       body: FutureBuilder<MovieListResponse>(
-        future: Api.getNowPlayingMovie(),
+        future: Api.getPopularMovie(),
         builder: (context, result) {
           if (result.hasError)
             return errorDialog(result.error.toString());
@@ -34,4 +36,5 @@ class NowPlayingState extends State<NowPlayingWidget> {
       ),
     );
   }
+
 }
