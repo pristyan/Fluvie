@@ -26,7 +26,10 @@ class Movie {
 
   String getPosterUrl() => imageBaseUrl + posterPath;
 
-  String getBackDropUrl() => imageBaseUrl + backdropPath;
+  String getBackDropUrl() {
+    if (backdropPath == null) return "";
+    else return imageBaseUrl + backdropPath;
+  }
 
   String getGenres() {
     String genre = "";
