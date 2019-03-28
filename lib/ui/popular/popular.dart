@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/model/movie_model.dart';
-import 'package:flutter_movie/widget/movie_item_list.dart';
+import 'package:flutter_movie/list/movie_item_list.dart';
 import 'package:flutter_movie/api/services.dart' as Api;
 
 class Popular extends StatefulWidget {

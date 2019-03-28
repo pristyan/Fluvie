@@ -5,4 +5,4 @@ const String API_VERSION = "3";
 const String MOVIE_DETAIL = "$API_VERSION/movie/";
 const String NOW_PLAYING = "$API_VERSION/movie/now_playing";
 const String GENRE_LIST = "$API_VERSION/genre/movie/list";
-const String TRENDING = "$API_VERSION/trending/movie/week";
+const String POPULAR = "$API_VERSION/movie/popular";

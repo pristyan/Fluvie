@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-ReviewResponse movieReviewResponseFromJson(String str) {
+ReviewResponse reviewResponseFromJson(String str) {
   final jsonData = json.decode(str);
   return ReviewResponse.fromJson(jsonData);
 }

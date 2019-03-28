@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie/style/dimens.dart';
 import 'package:flutter_movie/model/movie_model.dart';
 import 'package:flutter_movie/model/review_model.dart';
+import 'package:flutter_movie/model/cast_model.dart';
+import 'package:flutter_movie/model/crew_model.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-import 'package:flutter_movie/widget/review_item_list.dart';
+import 'package:flutter_movie/list/review_item_list.dart';
+import 'package:flutter_movie/list/cast_item_list.dart';
+import 'package:flutter_movie/list/crew_item_list.dart';
 import 'package:flutter_movie/api/services.dart' as Api;
 
 class MovieDetail extends StatefulWidget {
@@ -113,95 +117,166 @@ class MovieDetailState extends State<MovieDetail> {
 
   Widget buildReviewLabel() => Container(
         margin: EdgeInsets.all(marginDefault),
-        child: Text(
-          "Review",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: fontInput,
-              fontWeight: FontWeight.w700),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              "Review",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: fontInput,
+                  fontWeight: FontWeight.w700),
+            ),
+            GestureDetector(
+              child: Text(
+                "More",
+                style: TextStyle(
+                    color: Colors.yellow[700],
+                    fontSize: fontInput,
+                    fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
         ),
       );
 
-  Widget buildDetail(Movie movie, ReviewResponse review) =>
-      CustomScrollView(slivers: <Widget>[
+  Widget callDetailApi() => FutureBuilder<Movie>(
+        future: Api.getMovieDetail(movie.id),
+        builder: (context, detail) {
+          if (detail.hasError)
+            return buildErrorMessage(detail.error.toString());
+          else if (detail.hasData)
+            return buildOverviewTab(detail.data);
+          else
+            return buildLoadingView();
+        },
+      );
+
+  Widget callReviewApi() => FutureBuilder<ReviewResponse>(
+        future: Api.getMovieReview(movie.id),
+        builder: (context, review) {
+          if (review.hasError)
+            return buildErrorMessage(review.error.toString());
+          else if (review.hasData)
+            return buildReviewTab(review.data);
+          else
+            return buildLoadingView();
+        },
+      );
+
+  Widget callCastApi() => FutureBuilder<CastResponse>(
+        future: Api.getCaster(movie.id),
+        builder: (context, cast) {
+          if (cast.hasError)
+            return buildErrorMessage(cast.error.toString());
+          else if (cast.hasData)
+            return buildCastTab(cast.data);
+          else
+            return buildLoadingView();
+        },
+      );
+
+  Widget callCrewApi() => FutureBuilder<CrewResponse>(
+        future: Api.getCrew(movie.id),
+        builder: (context, result) {
+          if (result.hasError)
+            return buildErrorMessage(result.error.toString());
+          else if (result.hasData)
+            return buildCrewTab(result.data);
+          else
+            return buildLoadingView();
+        },
+      );
+
+  Widget buildOverviewTab(Movie movie) => CustomScrollView(slivers: <Widget>[
         SliverToBoxAdapter(child: buildHeaderView(movie)),
         SliverToBoxAdapter(child: buildMovieOverview(movie.overview)),
-        SliverToBoxAdapter(child: buildReviewLabel()),
+      ]);
+
+  Widget buildReviewTab(ReviewResponse review) =>
+      CustomScrollView(slivers: <Widget>[
         SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
           return reviewItemList(context, review.results[index]);
         }, childCount: review.results.length))
       ]);
 
-  Widget buildReview(int id) => FutureBuilder<ReviewResponse>(
-        future: Api.getMovieReview(id),
-        builder: (context, result) {
-          Widget widgetToDisplay;
+  Widget buildCastTab(CastResponse cast) => CustomScrollView(slivers: <Widget>[
+        SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+          return castItemList(context, cast.cast[index]);
+        }, childCount: cast.cast.length))
+      ]);
 
-          if (result.hasError)
-            widgetToDisplay = SliverToBoxAdapter(
-              child: buildErrorMessage(result.error.toString()),
-            );
-          else if (result.hasData)
-            widgetToDisplay = SliverList(
-                delegate: SliverChildBuilderDelegate((context, position) {
-              return reviewItemList(context, result.data.results[position]);
-            }));
-          else
-            widgetToDisplay = SliverToBoxAdapter(child: buildLoadingView());
-
-          return CustomScrollView(
-            slivers: <Widget>[widgetToDisplay],
-          );
-        },
-      );
+  Widget buildCrewTab(CrewResponse cast) => CustomScrollView(slivers: <Widget>[
+        SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+          return crewItemList(context, cast.crew[index]);
+        }, childCount: cast.crew.length))
+      ]);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              title: Text(movie.title),
-              expandedHeight: 200.0,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.pin,
-                  background: Image.network(
-                    movie.getBackDropUrl(),
-                    fit: BoxFit.cover,
-                  )),
-            ),
-          ];
-        },
-        body: SafeArea(
-          top: false,
-          bottom: false,
-          child: FutureBuilder<Movie>(
-            future: Api.getMovieDetail(movie.id),
-            builder: (context, detail) {
-              if (detail.hasError)
-                return buildErrorMessage(detail.error.toString());
-              else if (detail.hasData)
-                return FutureBuilder<ReviewResponse>(
-                  future: Api.getMovieReview(movie.id),
-                  builder: (context, review) {
-                    if (review.hasError)
-                      return buildErrorMessage(detail.error.toString());
-                    else if (review.hasData)
-                      return buildDetail(detail.data, review.data);
-                    else
-                      return buildLoadingView();
-                  },
-                );
-              else
-                return buildLoadingView();
+    return DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          body: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  title: Text(movie.title),
+                  expandedHeight: 200.0,
+                  floating: false,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.pin,
+                      background: Image.network(
+                        movie.getBackDropUrl(),
+                        fit: BoxFit.cover,
+                      )),
+                  bottom: TabBar(
+                    tabs: [
+                      Tab(
+                        text: "INFO",
+                      ),
+                      Tab(
+                        text: "REVIEW",
+                      ),
+                      Tab(
+                        text: "CAST",
+                      ),
+                      Tab(
+                        text: "CREW",
+                      ),
+                    ],
+                  ),
+                ),
+              ];
             },
+            body: TabBarView(children: [
+              SafeArea(
+                top: false,
+                bottom: false,
+                child: callDetailApi(),
+              ),
+              SafeArea(
+                top: false,
+                bottom: false,
+                child: callReviewApi(),
+              ),
+              SafeArea(
+                top: false,
+                bottom: false,
+                child: callCastApi(),
+              ),
+              SafeArea(
+                top: false,
+                bottom: false,
+                child: callCrewApi(),
+              ),
+            ]),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

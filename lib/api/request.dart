@@ -1,34 +1,21 @@
 import 'package:flutter_movie/api/constants.dart';
 
+Map<String, String> getApiKey() => {'api_key': API_KEY};
+
 Uri nowPlaying() {
-  var queryParam = {
-    'api_key': API_KEY,
-    'region': 'ID',
-  };
-
-  return Uri.https(BASE_URL, NOW_PLAYING, queryParam);
+  var param = getApiKey();
+  param['region'] = 'ID';
+  return Uri.https(BASE_URL, NOW_PLAYING, param);
 }
 
-Uri popularMovie() {
-  var queryParam = {
-    'api_key': API_KEY,
-  };
+Uri popularMovie() =>
+    Uri.https(BASE_URL, POPULAR, getApiKey());
 
-  return Uri.https(BASE_URL, TRENDING, queryParam);
-}
+Uri movieDetail(int id) =>
+    Uri.https(BASE_URL, MOVIE_DETAIL + id.toString(), getApiKey());
 
-Uri movieDetail(int id) {
-  var queryParam = {
-    'api_key': API_KEY,
-  };
+Uri movieReview(int id) =>
+    Uri.https(BASE_URL, MOVIE_DETAIL + id.toString() + "/reviews", getApiKey());
 
-  return Uri.https(BASE_URL, MOVIE_DETAIL + id.toString(), queryParam);
-}
-
-Uri movieReview(int id) {
-  var queryParam = {
-    'api_key': API_KEY,
-  };
-
-  return Uri.https(BASE_URL, MOVIE_DETAIL + id.toString() + "/reviews", queryParam);
-}
+Uri movieCredits(int id) =>
+    Uri.https(BASE_URL, MOVIE_DETAIL + id.toString() + "/credits", getApiKey());

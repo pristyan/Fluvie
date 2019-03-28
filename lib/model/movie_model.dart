@@ -28,7 +28,7 @@ class MovieListResponse {
 }
 
 
-Movie movieItemListFromJson(String str) {
+Movie movieDetailFromJson(String str) {
   final jsonData = json.decode(str);
   return Movie.fromJson(jsonData);
 }
