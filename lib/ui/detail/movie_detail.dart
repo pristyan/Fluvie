@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/style/dimens.dart';
-import 'package:flutter_movie/ui/movie_model.dart';
+import 'package:flutter_movie/model/movie_model.dart';
+import 'package:flutter_movie/model/review_model.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:flutter_movie/widget/review_item_list.dart';
 import 'package:flutter_movie/api/services.dart' as Api;
 
 class MovieDetail extends StatefulWidget {
@@ -18,15 +20,15 @@ class MovieDetailState extends State<MovieDetail> {
 
   MovieDetailState(this.movie);
 
-  Widget loading() => Column(
+  Widget buildLoadingView() => Column(
         children: <Widget>[LinearProgressIndicator()],
       );
 
-  Widget errorMessage(String message) => Center(
+  Widget buildErrorMessage(String message) => Center(
         child: Text(message),
       );
 
-  Widget headerView(Movie movie) => Container(
+  Widget buildHeaderView(Movie movie) => Container(
         color: Colors.blueGrey[700],
         padding: EdgeInsets.all(marginDefault),
         child: Row(
@@ -97,30 +99,61 @@ class MovieDetailState extends State<MovieDetail> {
         ),
       );
 
-  Widget movieOverview(Movie movie) => Container(
+  Widget buildMovieOverview(String overview) => Container(
         padding: EdgeInsets.all(marginDefault),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-
-            Text(
-              movie.overview,
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                fontSize: fontNormal,
-                color: Colors.black,
-              ),
-            ),
-          ],
+        child: Text(
+          overview,
+          textAlign: TextAlign.justify,
+          style: TextStyle(
+            fontSize: fontNormal,
+            color: Colors.black,
+          ),
         ),
       );
 
-  Widget dataView(Movie movie) => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          headerView(movie),
-          movieOverview(movie),
-        ],
+  Widget buildReviewLabel() => Container(
+        margin: EdgeInsets.all(marginDefault),
+        child: Text(
+          "Review",
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: fontInput,
+              fontWeight: FontWeight.w700),
+        ),
+      );
+
+  Widget buildDetail(Movie movie, ReviewResponse review) =>
+      CustomScrollView(slivers: <Widget>[
+        SliverToBoxAdapter(child: buildHeaderView(movie)),
+        SliverToBoxAdapter(child: buildMovieOverview(movie.overview)),
+        SliverToBoxAdapter(child: buildReviewLabel()),
+        SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+          return reviewItemList(context, review.results[index]);
+        }, childCount: review.results.length))
+      ]);
+
+  Widget buildReview(int id) => FutureBuilder<ReviewResponse>(
+        future: Api.getMovieReview(id),
+        builder: (context, result) {
+          Widget widgetToDisplay;
+
+          if (result.hasError)
+            widgetToDisplay = SliverToBoxAdapter(
+              child: buildErrorMessage(result.error.toString()),
+            );
+          else if (result.hasData)
+            widgetToDisplay = SliverList(
+                delegate: SliverChildBuilderDelegate((context, position) {
+              return reviewItemList(context, result.data.results[position]);
+            }));
+          else
+            widgetToDisplay = SliverToBoxAdapter(child: buildLoadingView());
+
+          return CustomScrollView(
+            slivers: <Widget>[widgetToDisplay],
+          );
+        },
       );
 
   @override
@@ -143,16 +176,28 @@ class MovieDetailState extends State<MovieDetail> {
             ),
           ];
         },
-        body: Container(
+        body: SafeArea(
+          top: false,
+          bottom: false,
           child: FutureBuilder<Movie>(
             future: Api.getMovieDetail(movie.id),
-            builder: (context, result) {
-              if (result.hasError)
-                return errorMessage(result.error.toString());
-              else if (result.hasData)
-                return dataView(result.data);
+            builder: (context, detail) {
+              if (detail.hasError)
+                return buildErrorMessage(detail.error.toString());
+              else if (detail.hasData)
+                return FutureBuilder<ReviewResponse>(
+                  future: Api.getMovieReview(movie.id),
+                  builder: (context, review) {
+                    if (review.hasError)
+                      return buildErrorMessage(detail.error.toString());
+                    else if (review.hasData)
+                      return buildDetail(detail.data, review.data);
+                    else
+                      return buildLoadingView();
+                  },
+                );
               else
-                return loading();
+                return buildLoadingView();
             },
           ),
         ),

@@ -24,3 +24,11 @@ Uri movieDetail(int id) {
 
   return Uri.https(BASE_URL, MOVIE_DETAIL + id.toString(), queryParam);
 }
+
+Uri movieReview(int id) {
+  var queryParam = {
+    'api_key': API_KEY,
+  };
+
+  return Uri.https(BASE_URL, MOVIE_DETAIL + id.toString() + "/reviews", queryParam);
+}

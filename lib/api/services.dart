@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as api;
 import 'dart:async';
-import 'package:flutter_movie/ui/movie_model.dart';
+import 'package:flutter_movie/model/movie_model.dart';
+import 'package:flutter_movie/model/review_model.dart';
 import 'package:flutter_movie/api/request.dart';
 
 Future<MovieListResponse> getNowPlayingMovie() async {
@@ -19,4 +20,10 @@ Future<MovieListResponse> getPopularMovie() async {
   final response = await api.get(popularMovie());
   print(response.request.url);
   return movieListResponseFromJson(response.body);
+}
+
+Future<ReviewResponse> getMovieReview(int id) async {
+  final response = await api.get(movieReview(id));
+  print(response.request.url);
+  return movieReviewResponseFromJson(response.body);
 }

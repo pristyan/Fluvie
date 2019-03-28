@@ -70,7 +70,7 @@ class Movie {
     return current;
   }
 
-  String getRunTime() => "$runtime minutes";
+  String getRunTime() => "$runtime mins";
 
   String getReleaseDate() => formatReadableDate(releaseDate);
 
