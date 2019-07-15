@@ -16,11 +16,9 @@ Widget crewItemList(BuildContext context, CrewModel cast) => Container(
               height: 50.0,
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(cast.getProfileImage())
-                )
-              ),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(cast.getProfileImage()))),
             ),
             Container(
               margin: EdgeInsets.only(left: marginDefault),

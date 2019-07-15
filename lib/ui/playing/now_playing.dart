@@ -9,12 +9,6 @@ class NowPlayingWidget extends StatefulWidget {
 }
 
 class NowPlayingState extends State<NowPlayingWidget> {
-  Widget movieListView(List<Movie> movies) => MovieList(movies);
-
-  Widget errorDialog(message) => Center(child: Text(message));
-
-  Widget loading() => Center(child: CircularProgressIndicator());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,11 +19,11 @@ class NowPlayingState extends State<NowPlayingWidget> {
         future: Api.getNowPlayingMovie(),
         builder: (context, result) {
           if (result.hasError)
-            return errorDialog(result.error.toString());
+            return Center(child: Text(result.error.toString()));
           else if (result.hasData)
-            return movieListView(result.data.results);
+            return MovieList(result.data.results);
           else
-            return loading();
+            return Center(child: CircularProgressIndicator());
         },
       ),
     );

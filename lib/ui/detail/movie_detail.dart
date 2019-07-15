@@ -24,14 +24,6 @@ class MovieDetailState extends State<MovieDetail> {
 
   MovieDetailState(this.movie);
 
-  Widget buildLoadingView() => Column(
-        children: <Widget>[LinearProgressIndicator()],
-      );
-
-  Widget buildErrorMessage(String message) => Center(
-        child: Text(message),
-      );
-
   Widget buildHeaderView(Movie movie) => Container(
         color: Colors.blueGrey[700],
         padding: EdgeInsets.all(marginDefault),
@@ -144,11 +136,11 @@ class MovieDetailState extends State<MovieDetail> {
         future: Api.getMovieDetail(movie.id),
         builder: (context, detail) {
           if (detail.hasError)
-            return buildErrorMessage(detail.error.toString());
+            return Center(child: Text(detail.error.toString()));
           else if (detail.hasData)
             return buildOverviewTab(detail.data);
           else
-            return buildLoadingView();
+            return Column(children: <Widget>[LinearProgressIndicator()]);
         },
       );
 
@@ -156,11 +148,11 @@ class MovieDetailState extends State<MovieDetail> {
         future: Api.getMovieReview(movie.id),
         builder: (context, review) {
           if (review.hasError)
-            return buildErrorMessage(review.error.toString());
+            return Center(child: Text(review.error.toString()));
           else if (review.hasData)
             return buildReviewTab(review.data);
           else
-            return buildLoadingView();
+            return Column(children: <Widget>[LinearProgressIndicator()]);
         },
       );
 
@@ -168,11 +160,11 @@ class MovieDetailState extends State<MovieDetail> {
         future: Api.getCaster(movie.id),
         builder: (context, cast) {
           if (cast.hasError)
-            return buildErrorMessage(cast.error.toString());
+            return Center(child: Text(cast.error.toString()));
           else if (cast.hasData)
             return buildCastTab(cast.data);
           else
-            return buildLoadingView();
+            return Column(children: <Widget>[LinearProgressIndicator()]);
         },
       );
 
@@ -180,11 +172,11 @@ class MovieDetailState extends State<MovieDetail> {
         future: Api.getCrew(movie.id),
         builder: (context, result) {
           if (result.hasError)
-            return buildErrorMessage(result.error.toString());
+            return Center(child: Text(result.error.toString()));
           else if (result.hasData)
             return buildCrewTab(result.data);
           else
-            return buildLoadingView();
+            return Column(children: <Widget>[LinearProgressIndicator()]);
         },
       );
 

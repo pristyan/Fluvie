@@ -6,16 +6,9 @@ import 'package:flutter_movie/api/services.dart' as Api;
 class Popular extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => PopularState();
-
 }
 
 class PopularState extends State<Popular> {
-
-  Widget movieListView(List<Movie> movies) => MovieList(movies);
-
-  Widget errorDialog(message) => Center(child: Text(message));
-
-  Widget loading() => Center(child: CircularProgressIndicator());
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +20,13 @@ class PopularState extends State<Popular> {
         future: Api.getPopularMovie(),
         builder: (context, result) {
           if (result.hasError)
-            return errorDialog(result.error.toString());
+            return Center(child: Text(result.error.toString()));
           else if (result.hasData)
-            return movieListView(result.data.results);
+            return MovieList(result.data.results);
           else
-            return loading();
+            return Center(child: CircularProgressIndicator());
         },
       ),
     );
   }
-
 }

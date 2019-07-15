@@ -47,10 +47,8 @@ class CastModel {
       "http://www.classicindiascale.com/wp-content/uploads/2018/06/header-profile-default.png";
 
   String getProfileImage() {
-    if (profilePath == null)
-      return defaultProfile;
-    else
-      return imageBaseUrl + profilePath;
+    if (profilePath == null) return defaultProfile;
+    else return imageBaseUrl + profilePath;
   }
 
   factory CastModel.fromJson(Map<String, dynamic> json) => CastModel(

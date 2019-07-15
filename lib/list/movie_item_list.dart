@@ -105,7 +105,6 @@ Widget movieItemList(BuildContext context, Movie movie) => Container(
       ),
     );
 
-
 class MovieList extends StatelessWidget {
   final List<Movie> items;
 

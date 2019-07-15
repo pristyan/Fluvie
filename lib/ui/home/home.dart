@@ -6,23 +6,19 @@ import 'package:flutter_movie/ui/favorite/favorite.dart';
 class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => HomeState();
-
 }
 
 class HomeState extends State<Home> {
-
   int selected = 0;
 
-  final tabs = [
-    NowPlayingWidget(),
-    Popular(),
-    Favorite()
-  ];
+  final tabs = [NowPlayingWidget(), Popular(), Favorite()];
 
   final tabItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.featured_play_list), title: Text('Now Playing')),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.featured_play_list), title: Text('Now Playing')),
     BottomNavigationBarItem(icon: Icon(Icons.star), title: Text('Popular')),
-    BottomNavigationBarItem(icon: Icon(Icons.favorite), title: Text('Favorite')),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.favorite), title: Text('Favorite')),
   ];
 
   void onTabSelected(int index) {
@@ -43,5 +39,4 @@ class HomeState extends State<Home> {
       ),
     );
   }
-
 }

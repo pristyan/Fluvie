@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/navigation/routes.dart';
 import 'package:flutter_movie/ui/home/home.dart';
+import 'package:flutter_movie/ui/login/login.dart';
 
 void main() => runApp(MyApp());
 

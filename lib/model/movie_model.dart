@@ -27,7 +27,6 @@ class MovieListResponse {
       {"page": page, "total_pages": totalPages, "results": results};
 }
 
-
 Movie movieDetailFromJson(String str) {
   final jsonData = json.decode(str);
   return Movie.fromJson(jsonData);
@@ -54,8 +53,10 @@ class Movie {
   String getPosterUrl() => imageBaseUrl + posterPath;
 
   String getBackDropUrl() {
-    if (backdropPath == null) return "";
-    else return imageBaseUrl + backdropPath;
+    if (backdropPath == null)
+      return "";
+    else
+      return imageBaseUrl + backdropPath;
   }
 
   String getGenres() {
@@ -65,8 +66,10 @@ class Movie {
   }
 
   String formatGenre(String current, String next) {
-    if (current == "") current = next;
-    else current = current + ", " + next;
+    if (current == "")
+      current = next;
+    else
+      current = current + ", " + next;
     return current;
   }
 
